@@ -1,15 +1,23 @@
 ## ----attach--------------------------------------------------------------------------------
 .libPaths("/home/rstudio/R/x86_64-pc-linux-gnu-library/4.1-3.14")
-# use appropriate methods to install AnVIL, LoomExperiment, reticulate,
+# use BiocManager to install AnVIL, LoomExperiment, reticulate,
 # cellgeni/sceasy
 #
 # this script should be run AFTER those packages are installed
-
+pipl = system("pip list", intern=TRUE)
+chk_loompy = grep("loompy", pipl)
+if (length(chk_loompy)==0) stop("no loompy in pip list output, please use pip to install in presence of numpy 1.20.0")
+chk_anndata = grep("anndata", pipl)
+if (length(chk_anndata)==0) stop("no anndata in pip list output, use pip to install")
 ii = installed.packages()
 stopifnot(all(c("AnVIL", "LoomExperiment", "reticulate", "sceasy") %in% rownames(ii)))
 
-system("wget https://cran.r-project.org/src/contrib/Archive/SeuratObject/SeuratObject_4.0.2.tar.gz")
-install.packages("SeuratObject_4.0.2.tar.gz", repos=NULL, type="source")
+if (("SeuratObject" %in% rownames(ii)) & packageVersion("SeuratObject") != "4.0.2") {
+  system("wget https://cran.r-project.org/src/contrib/Archive/SeuratObject/SeuratObject_4.0.2.tar.gz")
+  instatt = try(install.packages("SeuratObject_4.0.2.tar.gz", repos=NULL, type="source"))
+}
+if (inherits(instatt, "try-error")) stop("can't install SeuratObject 4.0.2, file issue at https://github.com/vjcitn/SeuratAnVILDemo/issues")
+if (packageVersion("SeuratObject") != "4.0.2") stop("Wrong version of SeuratObject installed, please use remove.packages('SeuratObject') and try again")
 
 suppressPackageStartupMessages({
 library(AnVIL)
