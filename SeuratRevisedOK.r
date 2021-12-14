@@ -1,5 +1,16 @@
 ## ----attach--------------------------------------------------------------------------------
 .libPaths("/home/rstudio/R/x86_64-pc-linux-gnu-library/4.1-3.14")
+# use appropriate methods to install AnVIL, LoomExperiment, reticulate,
+# cellgeni/sceasy
+#
+# this script should be run AFTER those packages are installed
+
+ii = installed.packages()
+stopifnot(all(c("AnVIL", "LoomExperiment", "reticulate", "sceasy") %in% rownames(ii)))
+
+system("wget https://cran.r-project.org/src/contrib/Archive/SeuratObject/SeuratObject_4.0.2.tar.gz")
+install.packages("SeuratObject_4.0.2.tar.gz", repos=NULL, type="source")
+
 suppressPackageStartupMessages({
 library(AnVIL)
 library(LoomExperiment)
